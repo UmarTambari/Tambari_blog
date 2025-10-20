@@ -47,12 +47,12 @@ export type Blog = {
   image: string;
   publishedAt: Date;
   category?: string | null;
-  tags: Tag[];
+  tags?: Tag[];
   readTime?: number | null;
   featured: boolean;
   authorId?: string | null;
   author?: Author | null;
-  contentBlocks: ContentBlock[];
+  contentBlocks?: ContentBlock[];
   createdAt: Date;
   updatedAt: Date;
 };

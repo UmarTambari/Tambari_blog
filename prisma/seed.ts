@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { PrismaClient, ContentType } from "../lib/generated/prisma/index.js";
 
 
@@ -200,6 +201,7 @@ function Counter() {
   });
 
   // Create Blog 3
+  // // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const blog3 = await prisma.blog.create({
     data: {
       slug: "introduction-to-machine-learning-python",

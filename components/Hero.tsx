@@ -2,33 +2,19 @@ import Link from "next/link";
 import { ArrowRight, Sparkles, TrendingUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import BlogCard from "@/components/BlogCard";
+import { Blog } from "@/app/types";
 
-interface HeroProps {
-  recentPosts: Array<{
-    id: string;
-    slug: string;
-    title: string;
-    summary: string;
-    image: string;
-    publishedAt: string | Date;
-    category?: string | null;
-    tags?: { id: string; name: string }[];
-    readTime?: number | null;
-    featured?: boolean;
-    author?: {
-      name: string;
-      avatar?: string | null;
-    } | null;
-  }>;
-}
+export type HeroProps = {
+  recentBlogs: Blog[];
+};
 
-export default function Hero({ recentPosts }: HeroProps) {
+export default function Hero({ recentBlogs }: HeroProps) {
   return (
     <div className="relative overflow-hidden">
       {/* Background Elements */}
       <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-secondary/5 to-accent/5" />
       <div className="absolute inset-0 bg-grid-pattern opacity-[0.02]" />
-      
+
       {/* Animated gradient orbs */}
       <div className="absolute top-0 right-0 w-96 h-96 bg-primary/10 rounded-full blur-3xl animate-pulse" />
       <div className="absolute bottom-0 left-0 w-96 h-96 bg-secondary/10 rounded-full blur-3xl animate-pulse delay-1000" />
@@ -57,8 +43,9 @@ export default function Hero({ recentPosts }: HeroProps) {
 
           {/* Subtitle */}
           <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-            Explore cutting-edge insights, expert perspectives, and in-depth articles 
-            on technology, innovation, and the future of digital transformation.
+            Explore cutting-edge insights, expert perspectives, and in-depth
+            articles on technology, innovation, and the future of digital
+            transformation.
           </p>
 
           {/* CTA Buttons */}
@@ -101,11 +88,11 @@ export default function Hero({ recentPosts }: HeroProps) {
           </div>
 
           {/* Blog Cards Grid */}
-          {recentPosts.length > 0 ? (
+          {recentBlogs && recentBlogs.length > 0 ? (
             <>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {recentPosts.map((post) => (
-                  <BlogCard key={post.id} blog={post} />
+                {recentBlogs.map((blog) => (
+                  <BlogCard key={blog.id} blog={blog} />
                 ))}
               </div>
 
@@ -122,7 +109,7 @@ export default function Hero({ recentPosts }: HeroProps) {
           ) : (
             <div className="text-center py-12 px-4 border-2 border-dashed rounded-lg bg-muted/20">
               <p className="text-muted-foreground">
-                No posts available yet. Check back soon!
+                No Blogs available yet. Check back soon!
               </p>
             </div>
           )}
