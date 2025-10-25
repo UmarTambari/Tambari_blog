@@ -41,7 +41,7 @@ export const Footer = () => {
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
                 <span className="text-lg font-bold text-primary-foreground">T</span>
               </div>
-              <span className="text-xl font-bold">TechBlog</span>
+              <span className="text-xl font-bold">Tambari Blog</span>
             </Link>
             <p className="text-sm text-muted-foreground max-w-xs">
               Stay updated with the latest in tech. Subscribe to our newsletter for weekly insights.
@@ -79,7 +79,7 @@ export const Footer = () => {
         {/* Bottom Bar */}
         <div className="mt-12 pt-8 border-t flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-sm text-muted-foreground">
-            © {currentYear} TechBlog. All rights reserved.
+            © {currentYear} Tambari Blog. All rights reserved.
           </p>
           
           {/* Social Links */}

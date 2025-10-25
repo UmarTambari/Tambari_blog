@@ -27,7 +27,7 @@ export const Header = () => {
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
             <span className="text-lg font-bold text-primary-foreground">T</span>
           </div>
-          <span className="text-xl font-bold">TechBlog</span>
+          <span className="text-xl font-bold">Tambari Blog</span>
         </Link>
 
         {/* Desktop Navigation */}

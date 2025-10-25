@@ -1,7 +1,9 @@
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import prisma from "@/lib/prisma";
+import { db } from "@/lib/db";
+import { blogs } from "@/lib/db/schema";
+import { eq } from "drizzle-orm";
 
 import {
   Calendar,
@@ -14,7 +16,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { ContentBlock } from "@/lib/generated/prisma";
+import { ContentBlock } from "@/app/types";
 import { formattedDate } from "@/app/functions";
 
 export default async function BlogDetailPage({
@@ -22,18 +24,28 @@ export default async function BlogDetailPage({
 }: {
   params: { slug: string };
 }) {
-  const blog = await prisma.blog.findUnique({
-    where: { slug: params.slug },
-    include: {
+  const blog = await db.query.blogs.findFirst({
+    where: eq(blogs.slug, params.slug),
+    with: {
       author: true,
       contentBlocks: true,
-      tags: true,
+      blogsToTags: {
+        with: {
+          tag: true,
+        },
+      },
     },
   });
 
   if (!blog) notFound();
 
- const blogDate = formattedDate(blog.publishedAt);
+  // Transform tags for easier access
+  const blogWithTags = {
+    ...blog,
+    tags: blog.blogsToTags.map((bt) => bt.tag),
+  };
+
+  const blogDate = formattedDate(blogWithTags.publishedAt);
 
   const renderContentBlock = (block: ContentBlock, index: number) => {
     switch (block.type) {
@@ -107,7 +119,7 @@ export default async function BlogDetailPage({
       <div className="relative">
         <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent" />
 
-        {blog.featured && (
+        {blogWithTags.featured && (
           <Badge
             variant="secondary"
             className="absolute top-6 left-6 bg-primary text-primary-foreground"
@@ -115,12 +127,12 @@ export default async function BlogDetailPage({
             Featured
           </Badge>
         )}
-        {blog.category && (
+        {blogWithTags.category && (
           <Badge
             variant="outline"
             className="absolute top-6 right-6 bg-background/80 backdrop-blur-sm"
           >
-            {blog.category}
+            {blogWithTags.category}
           </Badge>
         )}
       </div>
@@ -129,23 +141,23 @@ export default async function BlogDetailPage({
       <main className="container mx-auto px-4 py-12 max-w-4xl">
         <article>
           <header className="mb-8">
-            <h1 className="text-4xl font-bold mb-6">{blog.title}</h1>
+            <h1 className="text-4xl font-bold mb-6">{blogWithTags.title}</h1>
 
             <div className="flex flex-wrap items-center gap-6 text-sm text-muted-foreground mb-6">
               <div className="flex items-center gap-2">
                 <Calendar className="h-4 w-4" /> <span>{blogDate}</span>
               </div>
-              {blog.readTime && (
+              {blogWithTags.readTime && (
                 <div className="flex items-center gap-2">
                   <Clock className="h-4 w-4" />{" "}
-                  <span>{blog.readTime} min read</span>
+                  <span>{blogWithTags.readTime} min read</span>
                 </div>
               )}
             </div>
 
-            {blog.tags.length > 0 && (
+            {blogWithTags.tags.length > 0 && (
               <div className="flex flex-wrap gap-2 mb-6">
-                {blog.tags.map((tag) => (
+                {blogWithTags.tags.map((tag) => (
                   <Badge key={tag.id} variant="secondary">
                     #{tag.name}
                   </Badge>
@@ -165,18 +177,18 @@ export default async function BlogDetailPage({
           </header>
 
           <div className="prose max-w-none">
-            {blog.contentBlocks.map((block, index) =>
+            {blogWithTags.contentBlocks.map((block, index) =>
               renderContentBlock(block, index)
             )}
           </div>
 
-          {blog.author && (
+          {blogWithTags.author && (
             <footer className="mt-12 pt-8 border-t border-border">
               <div className="flex items-start gap-4">
-                {blog.author.avatar ? (
+                {blogWithTags.author.avatar ? (
                   <Image
-                    src={blog.author.avatar}
-                    alt={blog.author.name}
+                    src={blogWithTags.author.avatar}
+                    alt={blogWithTags.author.name}
                     width={64}
                     height={64}
                     className="rounded-full object-cover"
@@ -188,10 +200,12 @@ export default async function BlogDetailPage({
                 )}
                 <div>
                   <h4 className="text-lg font-semibold mb-2">
-                    {blog.author.name}
+                    {blogWithTags.author.name}
                   </h4>
-                  {blog.author.bio && (
-                    <p className="text-muted-foreground">{blog.author.bio}</p>
+                  {blogWithTags.author.bio && (
+                    <p className="text-muted-foreground">
+                      {blogWithTags.author.bio}
+                    </p>
                   )}
                 </div>
               </div>
