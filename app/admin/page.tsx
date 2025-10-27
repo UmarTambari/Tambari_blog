@@ -4,9 +4,8 @@ import { eq, desc, sql } from "drizzle-orm";
 import Link from "next/link";
 import { FileText, Users, Tags as TagsIcon, Clock } from "lucide-react";
 import StatCard from "@/app/admin/Components/StatCard";
-/**
- * Admin Dashboard - shows overview statistics
- */
+
+
 export default async function AdminDashboard() {
   // Fetch statistics
   const [totalBlogs] = await db

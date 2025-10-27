@@ -1,4 +1,14 @@
 CREATE TYPE "public"."content_type" AS ENUM('heading', 'subheading', 'text', 'image', 'code', 'quote');--> statement-breakpoint
+CREATE TYPE "public"."status" AS ENUM('draft', 'published');--> statement-breakpoint
+CREATE TABLE "admin_users" (
+	"id" text PRIMARY KEY NOT NULL,
+	"email" text NOT NULL,
+	"password" text NOT NULL,
+	"name" text NOT NULL,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	CONSTRAINT "admin_users_email_unique" UNIQUE("email")
+);
+--> statement-breakpoint
 CREATE TABLE "authors" (
 	"id" text PRIMARY KEY NOT NULL,
 	"name" text NOT NULL,
@@ -16,7 +26,8 @@ CREATE TABLE "blogs" (
 	"title" text NOT NULL,
 	"summary" text NOT NULL,
 	"image" text NOT NULL,
-	"published_at" timestamp DEFAULT now() NOT NULL,
+	"status" "status" DEFAULT 'draft' NOT NULL,
+	"published_at" timestamp,
 	"category" text,
 	"read_time" integer,
 	"featured" boolean DEFAULT false NOT NULL,
@@ -37,6 +48,7 @@ CREATE TABLE "content_blocks" (
 	"content" text NOT NULL,
 	"alt" text,
 	"language" text,
+	"order" integer DEFAULT 0 NOT NULL,
 	"blog_id" text NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL
 );
