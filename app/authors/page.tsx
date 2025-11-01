@@ -19,7 +19,6 @@ export default async function AuthorsPage() {
 
   if (!authors || authors.length === 0) return notFound();
 
-  // Transform the data to match your expected format
   const authorsWithTags = authors.map((author) => ({
     ...author,
     blogs: author.blogs.map((blog) => ({

@@ -5,7 +5,6 @@ import BlogCard from "@/components/BlogCard";
 import { BlogWithRelations } from "@/app/types";
 
 export default async function BlogsPage() {
-  // Use Drizzle's relational query API for cleaner syntax
   const allBlogs = await db.query.blogs.findMany({
     with: {
       author: true,
@@ -19,7 +18,6 @@ export default async function BlogsPage() {
     orderBy: [desc(blogs.publishedAt)],
   });
 
-  // Transform the data to match your expected format
   const blogsWithTags: BlogWithRelations[] = allBlogs.map((blog) => ({
     ...blog,
     tags: blog.blogsToTags.map((bt) => bt.tag),

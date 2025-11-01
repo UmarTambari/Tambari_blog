@@ -8,6 +8,27 @@
       "when": 1761490764554,
       "tag": "0000_happy_demogoblin",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1761591042928,
+      "tag": "0001_bouncy_patriot",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1761743577269,
+      "tag": "0002_abandoned_speedball",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1761749187156,
+      "tag": "0003_wide_luminals",
+      "breakpoints": true
     }
   ]
 }

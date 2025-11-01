@@ -3,7 +3,6 @@ import {
   blogs, 
   tags, 
   contentBlocks,
-  adminUsers, // ADD THIS if you're adding admin users table
 } from "@/lib/db/schema";
 import { z } from "zod";
 
@@ -12,14 +11,12 @@ export type Author = typeof authors.$inferSelect;
 export type Blog = typeof blogs.$inferSelect;
 export type Tag = typeof tags.$inferSelect;
 export type ContentBlock = typeof contentBlocks.$inferSelect;
-export type AdminUser = typeof adminUsers.$inferSelect; // ADD THIS
-
+export type UserRole = 'admin' | 'editor' | 'viewer';
 // Insert types (useful for forms)
 export type NewAuthor = typeof authors.$inferInsert;
 export type NewBlog = typeof blogs.$inferInsert;
 export type NewTag = typeof tags.$inferInsert;
 export type NewContentBlock = typeof contentBlocks.$inferInsert;
-export type NewAdminUser = typeof adminUsers.$inferInsert;
 
 // Extended types with relations for your components
 
@@ -122,7 +119,7 @@ export type DashboardStats = {
 };
 
 export const LoginSchema = z.object({
-  email: z.string().email(),
+  email: z.email(),
   password: z.string().min(6),
 });
 

@@ -1,7 +1,12 @@
 import "dotenv/config";
 import { db } from "./index";
-import { authors, blogs, tags, contentBlocks, blogsToTags, adminUsers } from "./schema";
-import { eq } from "drizzle-orm";
+import {
+  authors,
+  blogs,
+  tags,
+  contentBlocks,
+  blogsToTags,
+} from "./schema";
 
 async function seed() {
   console.log("🌱 Seeding database...");
@@ -30,7 +35,10 @@ async function seed() {
       },
     ];
 
-    const insertedAuthors = await db.insert(authors).values(authorData).returning();
+    const insertedAuthors = await db
+      .insert(authors)
+      .values(authorData)
+      .returning();
     console.log(`✅ Created ${insertedAuthors.length} authors`);
 
     // 2. Create Tags
@@ -57,8 +65,10 @@ async function seed() {
       {
         slug: "getting-started-with-nextjs-14",
         title: "Getting Started with Next.js 14: A Complete Guide",
-        summary: "Learn how to build modern web applications with Next.js 14, including server components, app router, and best practices for production-ready apps.",
-        image: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800&q=80",
+        summary:
+          "Learn how to build modern web applications with Next.js 14, including server components, app router, and best practices for production-ready apps.",
+        image:
+          "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800&q=80",
         status: "published" as const,
         publishedAt: new Date("2024-10-15"),
         category: "Web Development",
@@ -69,8 +79,10 @@ async function seed() {
       {
         slug: "mastering-postgresql-performance",
         title: "Mastering PostgreSQL Performance: Indexing Strategies",
-        summary: "Deep dive into PostgreSQL indexing strategies, query optimization, and performance tuning techniques for high-traffic applications.",
-        image: "https://images.unsplash.com/photo-1544383835-bda2bc66a55d?w=800&q=80",
+        summary:
+          "Deep dive into PostgreSQL indexing strategies, query optimization, and performance tuning techniques for high-traffic applications.",
+        image:
+          "https://images.unsplash.com/photo-1544383835-bda2bc66a55d?w=800&q=80",
         status: "published" as const,
         publishedAt: new Date("2024-10-20"),
         category: "Database",
@@ -81,8 +93,10 @@ async function seed() {
       {
         slug: "kubernetes-deployment-guide",
         title: "Complete Kubernetes Deployment Guide for Node.js Apps",
-        summary: "Step-by-step guide to deploying Node.js applications on Kubernetes, including configuration, scaling, and monitoring best practices.",
-        image: "https://images.unsplash.com/photo-1667372393119-3d4c48d07fc9?w=800&q=80",
+        summary:
+          "Step-by-step guide to deploying Node.js applications on Kubernetes, including configuration, scaling, and monitoring best practices.",
+        image:
+          "https://images.unsplash.com/photo-1667372393119-3d4c48d07fc9?w=800&q=80",
         status: "published" as const,
         publishedAt: new Date("2024-10-22"),
         category: "DevOps",
@@ -93,8 +107,10 @@ async function seed() {
       {
         slug: "react-design-patterns-2024",
         title: "Modern React Design Patterns You Should Know in 2024",
-        summary: "Explore essential React design patterns including compound components, render props, custom hooks, and the latest patterns for React 18+.",
-        image: "https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=800&q=80",
+        summary:
+          "Explore essential React design patterns including compound components, render props, custom hooks, and the latest patterns for React 18+.",
+        image:
+          "https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=800&q=80",
         status: "published" as const,
         publishedAt: new Date("2024-10-25"),
         category: "Frontend",
@@ -105,8 +121,10 @@ async function seed() {
       {
         slug: "building-accessible-web-apps",
         title: "Building Accessible Web Applications: A Practical Guide",
-        summary: "Learn how to create inclusive web experiences with proper semantic HTML, ARIA labels, keyboard navigation, and screen reader support.",
-        image: "https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?w=800&q=80",
+        summary:
+          "Learn how to create inclusive web experiences with proper semantic HTML, ARIA labels, keyboard navigation, and screen reader support.",
+        image:
+          "https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?w=800&q=80",
         status: "draft" as const,
         publishedAt: null,
         category: "Accessibility",
@@ -121,7 +139,7 @@ async function seed() {
 
     // 4. Create Content Blocks for each blog
     console.log("📄 Creating content blocks...");
-    
+
     // Content for Blog 1 - Next.js Guide
     const blog1Content = [
       {
@@ -132,7 +150,8 @@ async function seed() {
       },
       {
         type: "text" as const,
-        content: "Next.js 14 introduces groundbreaking features that revolutionize how we build React applications. The new App Router provides a more intuitive way to structure your application, while Server Components offer unprecedented performance improvements.",
+        content:
+          "Next.js 14 introduces groundbreaking features that revolutionize how we build React applications. The new App Router provides a more intuitive way to structure your application, while Server Components offer unprecedented performance improvements.",
         order: 1,
         blogId: insertedBlogs[0].id,
       },
@@ -144,7 +163,8 @@ async function seed() {
       },
       {
         type: "text" as const,
-        content: "The App Router brings several advantages: automatic code splitting, streaming server rendering, and simplified data fetching. These features work together to create faster, more efficient applications.",
+        content:
+          "The App Router brings several advantages: automatic code splitting, streaming server rendering, and simplified data fetching. These features work together to create faster, more efficient applications.",
         order: 3,
         blogId: insertedBlogs[0].id,
       },
@@ -172,7 +192,8 @@ export default async function Home() {
       },
       {
         type: "quote" as const,
-        content: "Next.js 14 makes building production-ready applications easier than ever before.",
+        content:
+          "Next.js 14 makes building production-ready applications easier than ever before.",
         order: 5,
         blogId: insertedBlogs[0].id,
       },
@@ -188,7 +209,8 @@ export default async function Home() {
       },
       {
         type: "text" as const,
-        content: "Database indexes are crucial for query performance, but they come with tradeoffs. Understanding when and how to use them is essential for building scalable applications.",
+        content:
+          "Database indexes are crucial for query performance, but they come with tradeoffs. Understanding when and how to use them is essential for building scalable applications.",
         order: 1,
         blogId: insertedBlogs[1].id,
       },
@@ -218,7 +240,8 @@ CREATE INDEX idx_active_users ON users(email) WHERE active = true;`,
       },
       {
         type: "text" as const,
-        content: "Kubernetes provides powerful orchestration capabilities for containerized applications. In this guide, we'll walk through deploying a Node.js application with proper configuration for production environments.",
+        content:
+          "Kubernetes provides powerful orchestration capabilities for containerized applications. In this guide, we'll walk through deploying a Node.js application with proper configuration for production environments.",
         order: 1,
         blogId: insertedBlogs[2].id,
       },
@@ -262,7 +285,8 @@ spec:
       },
       {
         type: "text" as const,
-        content: "The compound components pattern allows you to create flexible and reusable component APIs. This pattern is used extensively in popular libraries like Reach UI and Radix UI.",
+        content:
+          "The compound components pattern allows you to create flexible and reusable component APIs. This pattern is used extensively in popular libraries like Reach UI and Radix UI.",
         order: 1,
         blogId: insertedBlogs[3].id,
       },
@@ -308,7 +332,8 @@ Accordion.Item = function AccordionItem({ title, children, isOpen, onToggle }) {
       },
       {
         type: "text" as const,
-        content: "Building accessible web applications isn't just about compliance—it's about creating inclusive experiences for everyone. Approximately 15% of the world's population lives with some form of disability, and good accessibility benefits all users.",
+        content:
+          "Building accessible web applications isn't just about compliance—it's about creating inclusive experiences for everyone. Approximately 15% of the world's population lives with some form of disability, and good accessibility benefits all users.",
         order: 1,
         blogId: insertedBlogs[4].id,
       },
@@ -320,7 +345,8 @@ Accordion.Item = function AccordionItem({ title, children, isOpen, onToggle }) {
       },
       {
         type: "text" as const,
-        content: "The foundation of accessible web apps is proper semantic HTML. Use the right elements for the job: buttons for actions, links for navigation, and proper heading hierarchy.",
+        content:
+          "The foundation of accessible web apps is proper semantic HTML. Use the right elements for the job: buttons for actions, links for navigation, and proper heading hierarchy.",
         order: 3,
         blogId: insertedBlogs[4].id,
       },
@@ -345,22 +371,22 @@ Accordion.Item = function AccordionItem({ title, children, isOpen, onToggle }) {
       { blogId: insertedBlogs[0].id, tagId: insertedTags[1].id }, // TypeScript
       { blogId: insertedBlogs[0].id, tagId: insertedTags[2].id }, // React
       { blogId: insertedBlogs[0].id, tagId: insertedTags[8].id }, // Tutorial
-      
+
       // Blog 2 - PostgreSQL
       { blogId: insertedBlogs[1].id, tagId: insertedTags[3].id }, // PostgreSQL
       { blogId: insertedBlogs[1].id, tagId: insertedTags[7].id }, // Performance
       { blogId: insertedBlogs[1].id, tagId: insertedTags[9].id }, // Best Practices
-      
+
       // Blog 3 - Kubernetes
       { blogId: insertedBlogs[2].id, tagId: insertedTags[4].id }, // DevOps
       { blogId: insertedBlogs[2].id, tagId: insertedTags[5].id }, // AWS
       { blogId: insertedBlogs[2].id, tagId: insertedTags[8].id }, // Tutorial
-      
+
       // Blog 4 - React Patterns
       { blogId: insertedBlogs[3].id, tagId: insertedTags[2].id }, // React
       { blogId: insertedBlogs[3].id, tagId: insertedTags[1].id }, // TypeScript
       { blogId: insertedBlogs[3].id, tagId: insertedTags[9].id }, // Best Practices
-      
+
       // Blog 5 - Accessibility
       { blogId: insertedBlogs[4].id, tagId: insertedTags[6].id }, // UI/UX
       { blogId: insertedBlogs[4].id, tagId: insertedTags[9].id }, // Best Practices
@@ -368,17 +394,6 @@ Accordion.Item = function AccordionItem({ title, children, isOpen, onToggle }) {
 
     await db.insert(blogsToTags).values(blogTagRelations);
     console.log(`✅ Created ${blogTagRelations.length} blog-tag relationships`);
-
-    // 6. Create Admin User (with hashed password in real app!)
-    console.log("👨‍💼 Creating admin user...");
-    const adminData = {
-      email: "admin@yourblog.com",
-      password: "CHANGE_THIS_PASSWORD", // In production, use bcrypt to hash this!
-      name: "Blog Administrator",
-    };
-
-    await db.insert(adminUsers).values(adminData);
-    console.log("✅ Created admin user");
 
     console.log("\n🎉 Seeding completed successfully!");
     console.log("\n📊 Summary:");
@@ -388,7 +403,6 @@ Accordion.Item = function AccordionItem({ title, children, isOpen, onToggle }) {
     console.log(`   - ${allContentBlocks.length} content blocks`);
     console.log(`   - ${blogTagRelations.length} blog-tag relationships`);
     console.log(`   - 1 admin user`);
-    
   } catch (error) {
     console.error("❌ Error seeding database:", error);
     throw error;

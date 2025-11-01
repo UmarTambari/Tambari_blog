@@ -59,7 +59,7 @@ export default async function BlogDetailPage({
 
   const blogDate = blogWithTags.publishedAt
 
-  const renderContentBlock = (block: ContentBlock, index: number) => {
+  const renderContentBlock = (block: ContentBlock) => {
     switch (block.type) {
       case "heading":
         return (
@@ -182,7 +182,7 @@ export default async function BlogDetailPage({
               {blogDate && (
                 <div className="flex items-center gap-2">
                   <Calendar className="h-4 w-4" />
-                  <span>{blogDate}</span>
+                  <span>{formattedDate(blogDate)}</span>
                 </div>
               )}
               {blogWithTags.readTime && (
@@ -216,8 +216,8 @@ export default async function BlogDetailPage({
 
           <div className="prose prose-lg max-w-none dark:prose-invert prose-headings:font-bold prose-h2:text-3xl prose-h3:text-2xl prose-p:text-muted-foreground prose-p:leading-relaxed">
             {blogWithTags.contentBlocks.length > 0 ? (
-              blogWithTags.contentBlocks.map((block, index) =>
-                renderContentBlock(block, index)
+              blogWithTags.contentBlocks.map((block) =>
+                renderContentBlock(block)
               )
             ) : (
               <p className="text-muted-foreground italic">

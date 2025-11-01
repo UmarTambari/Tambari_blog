@@ -1,41 +1,69 @@
-import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
-import { verifyToken } from "@/lib/auth";
+import { createServerClient } from "@supabase/ssr";
+import { NextResponse, type NextRequest } from "next/server";
 
-/**
- * Middleware runs BEFORE every request
- * We use it to check if user is logged in before accessing admin pages
- */
 export async function middleware(request: NextRequest) {
-  const path = request.nextUrl.pathname;
+  const supabaseResponse = NextResponse.next({
+    request,
+  });
 
-  // Public routes that don't need authentication
-  const isPublicRoute = path === "/admin/login" || path === "/admin/setup";
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() {
+          return request.cookies.getAll();
+        },
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value, options }) => {
+            request.cookies.set(name, value);
+            supabaseResponse.cookies.set(name, value, options);
+          });
+        },
+      },
+    }
+  );
 
-  // Get the session token from cookies
-  const token = request.cookies.get("admin_session")?.value;
+  const {
+    data: { user },
+    error,
+  } = await supabase.auth.getUser();
 
-  // Verify if token is valid
-  const session = token ? await verifyToken(token) : null;
+  // Protected admin routes
+  if (request.nextUrl.pathname.startsWith("/admin")) {
+    // Allow login page without authentication
+    if (request.nextUrl.pathname === "/admin/login") {
+      // If user is already logged in, redirect to dashboard
+      if (user && !error) {
+        const url = request.nextUrl.clone();
+        url.pathname = "/admin/dashboard";
+        return NextResponse.redirect(url);
+      }
+      return supabaseResponse;
+    }
 
-  // If trying to access admin pages without being logged in
-  if (path.startsWith("/admin") && !isPublicRoute && !session) {
-    return NextResponse.redirect(new URL("/admin/login", request.url));
+    // For all other admin routes, require authentication
+    if (!user || error) {
+      const url = request.nextUrl.clone();
+      url.pathname = "/admin/login";
+      url.searchParams.set("redirect", request.nextUrl.pathname);
+      return NextResponse.redirect(url);
+    }
   }
 
-  // If already logged in and trying to access login page, redirect to dashboard
-  if (isPublicRoute && session) {
-    return NextResponse.redirect(new URL("/admin", request.url));
-  }
-
-  // Allow the request to continue
-  return NextResponse.next();
+  return supabaseResponse;
 }
 
-/**
- * Configure which routes this middleware should run on
- * Here we're saying: run on all /admin routes
- */
 export const config = {
-  matcher: ["/admin/:path*"],
+  matcher: [
+    /*
+     * Match all request paths except:
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     * - public folder
+     * - api routes (they handle their own auth)
+     */
+    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$|api).*)",
+  ],
 };

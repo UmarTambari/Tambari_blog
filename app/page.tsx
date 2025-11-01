@@ -7,7 +7,7 @@ import Hero from "@/components/Hero";
 
 const page = async () => {
   const recentBlogsData = await db.query.blogs.findMany({
-    limit: 6,
+    limit: 3,
     orderBy: [desc(blogs.publishedAt)],
     with: {
       author: true,
@@ -19,7 +19,6 @@ const page = async () => {
     },
   });
 
-  // Transform tags for Hero component
   const recentBlogs = recentBlogsData.map((blog) => ({
     ...blog,
     tags: blog.blogsToTags.map((bt) => bt.tag),

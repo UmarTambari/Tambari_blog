@@ -1,10 +1,10 @@
 import {
   pgTable,
-  text,
   timestamp,
   integer,
   boolean,
   pgEnum,
+  varchar,
 } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 
@@ -20,75 +20,77 @@ export const contentTypeEnum = pgEnum("content_type", [
 
 export const statusEnum = pgEnum("status", ["draft", "published"]);
 
+export const roleEnum = pgEnum("role", ["admin", "editor", "viewer"]);
+
 // Tables
 export const authors = pgTable("authors", {
-  id: text("id")
+  id: varchar()
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
-  name: text("name").notNull(),
-  email: text("email").notNull().unique(),
-  avatar: text("avatar"),
-  bio: text("bio"),
+  name: varchar().notNull(),
+  email: varchar().notNull().unique(),
+  avatar: varchar(),
+  bio: varchar(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
 export const blogs = pgTable("blogs", {
-  id: text("id")
+  id: varchar("id")
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
-  slug: text("slug").notNull().unique(),
-  title: text("title").notNull(),
-  summary: text("summary").notNull(),
-  image: text("image").notNull(),
-  status: statusEnum("status").default("draft").notNull(),
+  slug: varchar().notNull().unique(),
+  title: varchar().notNull(),
+  summary: varchar().notNull(),
+  image: varchar().notNull(),
+  status: statusEnum().default("draft").notNull(),
   publishedAt: timestamp("published_at"),
-  category: text("category"),
+  category: varchar(),
   readTime: integer("read_time"),
-  featured: boolean("featured").default(false).notNull(),
-  authorId: text("author_id").references(() => authors.id),
+  featured: boolean().default(false).notNull(),
+  authorId: varchar().references(() => authors.id),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
 export const tags = pgTable("tags", {
-  id: text("id")
+  id: varchar("id")
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
-  name: text("name").notNull().unique(),
+  name: varchar("name").notNull().unique(),
 });
 
 export const contentBlocks = pgTable("content_blocks", {
-  id: text("id")
+  id: varchar("id")
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
   type: contentTypeEnum("type").notNull(),
-  content: text("content").notNull(),
-  alt: text("alt"),
-  language: text("language"),
+  content: varchar("content").notNull(),
+  alt: varchar("alt"),
+  language: varchar("language"),
   order: integer("order").notNull().default(0),
-  blogId: text("blog_id")
+  blogId: varchar("blog_id")
     .notNull()
     .references(() => blogs.id, { onDelete: "cascade" }),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
-export const adminUsers = pgTable("admin_users", {
-  id: text("id")
+export const userRoles = pgTable("user_roles", {
+  id: varchar()
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
-  email: text("email").notNull().unique(),
-  password: text("password").notNull(),
-  name: text("name").notNull(),
+  userId: varchar("user_id").notNull().unique(), // This references auth.users(id) in Supabase
+  role: roleEnum("role").default("viewer").notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
 // Junction table for many-to-many relationship
 export const blogsToTags = pgTable("blogs_to_tags", {
-  blogId: text("blog_id")
+  blogId: varchar()
     .notNull()
     .references(() => blogs.id, { onDelete: "cascade" }),
-  tagId: text("tag_id")
+  tagId: varchar()
     .notNull()
     .references(() => tags.id, { onDelete: "cascade" }),
 });
@@ -129,4 +131,6 @@ export const blogsToTagsRelations = relations(blogsToTags, ({ one }) => ({
   }),
 }));
 
-export const adminUsersRelations = relations(adminUsers, ({ many }) => ({}));
+export const userRolesRelations = relations(userRoles, ({ many }) => ({
+  userRoles: many(userRoles),
+}));
